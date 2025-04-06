@@ -30,6 +30,7 @@
   <div id="buttons"></div>
 
   <script>
+     const email = "goradiongue97@gmail.com"; // ou un autre email selon l'utilisateur
     // Récupération de l'email depuis l'URL
     const params = new URLSearchParams(window.location.search);
     const email = params.get("email");
@@ -62,7 +63,7 @@
 
         // Génération des boutons avec des liens dynamiques utilisant l'email
         buttons.innerHTML = `
-          <button onclick="window.open('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + email + '&action=arrivee')}&size=150', '_blank')">Pointer Arrivée</button>
+          <button onclick="window.open('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + encodeURIComponent(email) + '&action=descente', '_blank')">Pointer Arrivée</button>
           <button onclick="window.open('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + encodeURIComponent(email) + '&action=urgence', '_blank')">Pointer Urgence</button>
           <button onclick="window.open('https://quickchart.io/qr?text=${encodeURIComponent('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + email + '&action=retour')}&size=150', '_blank')">Pointer Retour</button>
           <button onclick="window.open('https://quickchart.io/qr?text=${encodeURIComponent('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + email + '&action=descente')}&size=150', '_blank')">Pointer Descente</button>
