@@ -30,43 +30,44 @@
   <div id="buttons"></div>
 
   <script>
-    // Récupération de l'ID utilisateur depuis l'URL
+    // Récupération de l'email depuis l'URL
     const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
+    const email = params.get("email");
 
-    // Base de données simulée des utilisateurs avec leurs options
-    const users = {
-      user001: {
-        nom: "Gora DIONGUE",
-        matin: "https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=gora@example.com&action=arrivee_matin",
-        midi: "https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=gora@example.com&action=arrivee_midi",
-        soir: "https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=gora@example.com&action=arrivee_soir",
-        sortie: "https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=gora@example.com&action=arrivee_sortie"
-      },
-      user002: {
-        nom: "Aissatou BA",
-        matin: "https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=aissatou@example.com&action=arrivee_matin",
-        midi: "https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=aissatou@example.com&action=arrivee_midi",
-        soir: "https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=aissatou@example.com&action=arrivee_soir",
-        sortie: "https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=aissatou@example.com&action=arrivee_sortie"
-      }
-      // ➕ Ajouter d'autres utilisateurs ici
-    };
-
-    // Vérification et affichage dynamique selon l'ID utilisateur
-    const user = users[id];
-
-    if (!user) {
-      document.getElementById("titre").innerText = "Utilisateur inconnu ❌";
+    // Vérification si l'email est bien passé dans l'URL
+    if (!email) {
+      document.getElementById("titre").innerText = "Email manquant ❌";
     } else {
-      document.getElementById("titre").innerText = `Bonjour ${user.nom} 👋`;
-      const buttons = document.getElementById("buttons");
-      buttons.innerHTML = `
-        <button onclick="window.open('${user.matin}', '_blank')">Pointer Matin</button>
-        <button onclick="window.open('${user.midi}', '_blank')">Pointer Midi</button>
-        <button onclick="window.open('${user.soir}', '_blank')">Pointer Soir</button>
-        <button onclick="window.open('${user.sortie}', '_blank')">Pointer Sortie</button>
-      `;
+      // Base de données simulée des utilisateurs avec leurs options
+      const users = {
+        "gora@example.com": {
+          nom: "Gora DIONGUE"
+        },
+        "aissatou@example.com": {
+          nom: "Aissatou BA"
+        }
+        // ➕ Ajouter d'autres utilisateurs ici
+      };
+
+      // Vérification de l'utilisateur
+      const user = users[email];
+
+      if (!user) {
+        document.getElementById("titre").innerText = "Utilisateur inconnu ❌";
+      } else {
+        // Affichage du message de bienvenue
+        document.getElementById("titre").innerText = `Bonjour ${user.nom} 👋`;
+
+        const buttons = document.getElementById("buttons");
+
+        // Génération des boutons avec des liens dynamiques utilisant l'email
+        buttons.innerHTML = `
+          <button onclick="window.open('https://quickchart.io/qr?text=${encodeURIComponent('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + email + '&action=arrivee')}&size=150', '_blank')">Pointer Arrivée</button>
+          <button onclick="window.open('https://quickchart.io/qr?text=${encodeURIComponent('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + email + '&action=urgence')}&size=150', '_blank')">Pointer Urgence</button>
+          <button onclick="window.open('https://quickchart.io/qr?text=${encodeURIComponent('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + email + '&action=retour')}&size=150', '_blank')">Pointer Retour</button>
+          <button onclick="window.open('https://quickchart.io/qr?text=${encodeURIComponent('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + email + '&action=descente')}&size=150', '_blank')">Pointer Descente</button>
+        `;
+      }
     }
   </script>
 </body>
