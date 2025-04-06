@@ -30,41 +30,34 @@
   <div id="buttons"></div>
 
   <script>
-    // Récupération de l'email depuis l'URL
-    const params = new URLSearchParams(window.location.search);
-    const email = params.get("email");
+    const email = new URLSearchParams(window.location.search).get("email");
+    const scriptBase = "https://script.google.com/macros/s/AKfycbyevg7LfiXU8T-l2Bc29SqXjuCUkz_vX4aFo8i11Gcr6ki-ls3zYIcXw1RCd88VzXhXJQ/exec";
 
-    // Vérification si l'email est bien passé dans l'URL
     if (!email) {
       document.getElementById("titre").innerText = "Email manquant ❌";
     } else {
-      // Base de données simulée des utilisateurs avec leurs options
-      const users = {
-        "gora@exemple.com": {
-          nom: "Gora DIONGUE"
-        },
-        "aissatou@example.com": {
-          nom: "Aissatou BA"
-        }
-        // ➕ Ajouter d'autres utilisateurs ici
-      };
+      fetch(`${scriptBase}?email=${encodeURIComponent(email)}`)
+        .then(res => res.text())
+        .then(response => {
+          if (response.startsWith("Bonjour")) {
+            document.getElementById("titre").innerText = response;
 
-      const user = users[email];
+            const buttons = document.getElementById("buttons");
 
-      if (!user) {
-        document.getElementById("titre").innerText = "Utilisateur inconnu ❌";
-      } else {
-        document.getElementById("titre").innerText = `Bonjour ${user.nom} 👋`;
-
-        const buttons = document.getElementById("buttons");
-
-        buttons.innerHTML = `
-          <button onclick="window.open('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + encodeURIComponent(email) + '&action=arrivee', '_blank')">Pointer Arrivée</button>
-          <button onclick="window.open('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + encodeURIComponent(email) + '&action=urgence', '_blank')">Pointer Urgence</button>
-          <button onclick="window.open('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + encodeURIComponent(email) + '&action=fin_urgence', '_blank')">Fin d'Urgence</button>
-          <button onclick="window.open('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + encodeURIComponent(email) + '&action=descente', '_blank')">Pointer Descente</button>
-        `;
-      }
+            buttons.innerHTML = `
+              <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=arrivee', '_blank')">Pointer Arrivée</button>
+              <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=urgence', '_blank')">Pointer Urgence</button>
+              <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=fin_urgence', '_blank')">Fin d'Urgence</button>
+              <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=descente', '_blank')">Pointer Descente</button>
+            `;
+          } else {
+            document.getElementById("titre").innerText = response;
+          }
+        })
+        .catch(error => {
+          document.getElementById("titre").innerText = "Erreur de connexion 🚫";
+          console.error(error);
+        });
     }
   </script>
 </body>
