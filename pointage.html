@@ -40,7 +40,7 @@
     } else {
       // Base de données simulée des utilisateurs avec leurs options
       const users = {
-        "gora@example.com": {
+        "goradiongue97@gmail.com": {
           nom: "Gora DIONGUE"
         },
         "aissatou@example.com": {
@@ -49,23 +49,20 @@
         // ➕ Ajouter d'autres utilisateurs ici
       };
 
-      // Vérification de l'utilisateur
       const user = users[email];
 
       if (!user) {
         document.getElementById("titre").innerText = "Utilisateur inconnu ❌";
       } else {
-        // Affichage du message de bienvenue
         document.getElementById("titre").innerText = `Bonjour ${user.nom} 👋`;
 
         const buttons = document.getElementById("buttons");
 
-        // Génération des boutons avec des liens dynamiques utilisant l'email
         buttons.innerHTML = `
-          <button onclick="window.open('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + encodeURIComponent(email) + '&action=descente', '_blank')">Pointer Arrivée</button>
+          <button onclick="window.open('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + encodeURIComponent(email) + '&action=arrivee', '_blank')">Pointer Arrivée</button>
           <button onclick="window.open('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + encodeURIComponent(email) + '&action=urgence', '_blank')">Pointer Urgence</button>
-          <button onclick="window.open('https://quickchart.io/qr?text=${encodeURIComponent('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + email + '&action=retour')}&size=150', '_blank')">Pointer Retour</button>
-          <button onclick="window.open('https://quickchart.io/qr?text=${encodeURIComponent('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + email + '&action=descente')}&size=150', '_blank')">Pointer Descente</button>
+          <button onclick="window.open('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + encodeURIComponent(email) + '&action=fin_urgence', '_blank')">Fin d'Urgence</button>
+          <button onclick="window.open('https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=' + encodeURIComponent(email) + '&action=descente', '_blank')">Pointer Descente</button>
         `;
       }
     }
