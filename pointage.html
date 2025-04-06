@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Pointage</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2em;
+      text-align: center;
+      background: #f9f9f9;
+    }
+    button {
+      margin: 1em;
+      padding: 1em 2em;
+      font-size: 1em;
+      border: none;
+      background: #0066cc;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #004b99;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="titre">Chargement...</h1>
+  <div id="buttons"></div>
+
+  <script>
+    // Récupération de l'ID utilisateur depuis l'URL
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    // Base de données simulée des utilisateurs avec leurs options
+    const users = {
+      user001: {
+        nom: "Gora DIONGUE",
+        matin: "https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=gora@example.com&action=arrivee_matin",
+        midi: "https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=gora@example.com&action=arrivee_midi",
+        soir: "https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=gora@example.com&action=arrivee_soir",
+        sortie: "https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=gora@example.com&action=arrivee_sortie"
+      },
+      user002: {
+        nom: "Aissatou BA",
+        matin: "https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=aissatou@example.com&action=arrivee_matin",
+        midi: "https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=aissatou@example.com&action=arrivee_midi",
+        soir: "https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=aissatou@example.com&action=arrivee_soir",
+        sortie: "https://script.google.com/macros/s/AKfycbydY3UccFyDwFCH1f9eyRnJ6eefLLDe8DDlcWYPBVWUgJzPpBOOhwQ99q4EbKHZOZzfmg/exec?email=aissatou@example.com&action=arrivee_sortie"
+      }
+      // ➕ Ajouter d'autres utilisateurs ici
+    };
+
+    // Vérification et affichage dynamique selon l'ID utilisateur
+    const user = users[id];
+
+    if (!user) {
+      document.getElementById("titre").innerText = "Utilisateur inconnu ❌";
+    } else {
+      document.getElementById("titre").innerText = `Bonjour ${user.nom} 👋`;
+      const buttons = document.getElementById("buttons");
+      buttons.innerHTML = `
+        <button onclick="window.open('${user.matin}', '_blank')">Pointer Matin</button>
+        <button onclick="window.open('${user.midi}', '_blank')">Pointer Midi</button>
+        <button onclick="window.open('${user.soir}', '_blank')">Pointer Soir</button>
+        <button onclick="window.open('${user.sortie}', '_blank')">Pointer Sortie</button>
+      `;
+    }
+  </script>
+</body>
+</html>
