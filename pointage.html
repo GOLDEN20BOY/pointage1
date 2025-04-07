@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pointage</title>
   <style>
     body {
@@ -47,6 +47,7 @@
     button:nth-child(1) {
       background: #28a745;
     }
+
     button:nth-child(1):hover {
       background: #218838;
     }
@@ -54,6 +55,7 @@
     button:nth-child(2) {
       background: #dc3545;
     }
+
     button:nth-child(2):hover {
       background: #c82333;
     }
@@ -62,6 +64,7 @@
       background: #ffc107;
       color: black;
     }
+
     button:nth-child(3):hover {
       background: #e0a800;
     }
@@ -69,6 +72,7 @@
     button:nth-child(4) {
       background: #007bff;
     }
+
     button:nth-child(4):hover {
       background: #0056b3;
     }
@@ -100,49 +104,36 @@
   <div id="buttons"></div>
 
   <script>
-    const email = new URLSearchParams(window.location.search).get("email");
+    const params = new URLSearchParams(window.location.search);
+    const email = params.get("email");
+
+    const titre = document.getElementById("titre");
+    const buttons = document.getElementById("buttons");
+
     const scriptBase = "https://script.google.com/macros/s/AKfycbwtpnGXCGpXOzPeOhe0h_qk7QCTIshxqHvZpC_NQHzVVHNz8bVOhKEMe9InIX-5smVbfA/exec";
 
-    document.addEventListener("DOMContentLoaded", () => {
-      if (!email) {
-        document.getElementById("titre").innerText = "Email manquant ❌";
-        return;
-      }
-
+    if (!email || !email.includes("@")) {
+      titre.innerText = "Paramètre email manquant ou invalide ❌";
+    } else {
       fetch(`${scriptBase}?email=${encodeURIComponent(email)}`)
         .then(res => res.text())
         .then(response => {
           if (response.startsWith("Bonjour")) {
-            document.getElementById("titre").innerText = response;
+            titre.innerText = response;
 
-            const buttons = document.getElementById("buttons");
             buttons.innerHTML = `
-              <button onclick="pointer('arrivee')">Pointer Arrivée</button>
-              <button onclick="pointer('urgence')">Pointer Urgence</button>
-              <button onclick="pointer('retour')">Fin d'Urgence</button>
-              <button onclick="pointer('descente')">Pointer Descente</button>
+              <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=arrivee', '_blank')">Pointer Arrivée</button>
+              <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=urgence', '_blank')">Pointer Urgence</button>
+              <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=retour', '_blank')">Fin d'Urgence</button>
+              <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=descente', '_blank')">Pointer Descente</button>
             `;
           } else {
-            document.getElementById("titre").innerText = response;
+            titre.innerText = response;
           }
         })
         .catch(error => {
-          document.getElementById("titre").innerText = "Erreur de connexion 🚫";
-          console.error(error);
-        });
-    });
-
-    function pointer(action) {
-      if (!email) return;
-
-      fetch(`${scriptBase}?email=${encodeURIComponent(email)}&action=${action}`)
-        .then(res => res.text())
-        .then(response => {
-          alert(response); // Message de confirmation à l'utilisateur
-        })
-        .catch(error => {
-          alert("Erreur lors de l'envoi du pointage ❌");
-          console.error(error);
+          titre.innerText = "Erreur de connexion au serveur 🚫";
+          console.error("Erreur :", error);
         });
     }
   </script>
