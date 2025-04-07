@@ -2,7 +2,6 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pointage</title>
   <style>
     body {
@@ -72,27 +71,6 @@
     button:nth-child(4):hover {
       background: #0056b3;
     }
-
-    /* Responsive pour mobile */
-    @media (max-width: 600px) {
-      body {
-        padding: 1em;
-      }
-
-      h1#bimo-title {
-        font-size: 2em;
-      }
-
-      h2#titre {
-        font-size: 1.2em;
-      }
-
-      button {
-        width: 90%;
-        font-size: 1em;
-        padding: 0.8em;
-      }
-    }
   </style>
 </head>
 <body>
@@ -102,7 +80,7 @@
 
   <script>
     const email = new URLSearchParams(window.location.search).get("email");
-    const scriptBase = "https://script.google.com/macros/s/AKfycbxBDY7ua9AnXsYvJeGfut6kYbF9eacu-8Nc_1i4kwRkqrOw_1RqsbOwabEtGe4___8NTw/exec";
+    const scriptBase = "https://script.google.com/macros/s/AKfycbwmK2--accR2_BASEiShvf5lP5LJNJR9ImsC4_9YGd1/exec";
 
     if (!email) {
       document.getElementById("titre").innerText = "Email manquant ❌";
