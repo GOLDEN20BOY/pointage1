@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pointage</title>
   <style>
     body {
@@ -45,21 +45,21 @@
     }
 
     button:nth-child(1) {
-      background: #28a745; /* vert pour arrivée */
+      background: #28a745;
     }
     button:nth-child(1):hover {
       background: #218838;
     }
 
     button:nth-child(2) {
-      background: #dc3545; /* rouge pour urgence */
+      background: #dc3545;
     }
     button:nth-child(2):hover {
       background: #c82333;
     }
 
     button:nth-child(3) {
-      background: #ffc107; /* jaune/orange pour retour */
+      background: #ffc107;
       color: black;
     }
     button:nth-child(3):hover {
@@ -67,13 +67,12 @@
     }
 
     button:nth-child(4) {
-      background: #007bff; /* bleu pour descente */
+      background: #007bff;
     }
     button:nth-child(4):hover {
       background: #0056b3;
     }
 
-    /* Responsive pour mobile */
     @media (max-width: 600px) {
       body {
         padding: 1em;
@@ -104,9 +103,12 @@
     const email = new URLSearchParams(window.location.search).get("email");
     const scriptBase = "https://script.google.com/macros/s/AKfycbwtpnGXCGpXOzPeOhe0h_qk7QCTIshxqHvZpC_NQHzVVHNz8bVOhKEMe9InIX-5smVbfA/exec";
 
-    if (!email) {
-      document.getElementById("titre").innerText = "Email manquant ❌";
-    } else {
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!email) {
+        document.getElementById("titre").innerText = "Email manquant ❌";
+        return;
+      }
+
       fetch(`${scriptBase}?email=${encodeURIComponent(email)}`)
         .then(res => res.text())
         .then(response => {
@@ -114,12 +116,11 @@
             document.getElementById("titre").innerText = response;
 
             const buttons = document.getElementById("buttons");
-
             buttons.innerHTML = `
-              <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=arrivee', '_blank')">Pointer Arrivée</button>
-              <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=urgence', '_blank')">Pointer Urgence</button>
-              <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=retour', '_blank')">Fin d'Urgence</button>
-              <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=descente', '_blank')">Pointer Descente</button>
+              <button onclick="pointer('arrivee')">Pointer Arrivée</button>
+              <button onclick="pointer('urgence')">Pointer Urgence</button>
+              <button onclick="pointer('retour')">Fin d'Urgence</button>
+              <button onclick="pointer('descente')">Pointer Descente</button>
             `;
           } else {
             document.getElementById("titre").innerText = response;
@@ -127,6 +128,20 @@
         })
         .catch(error => {
           document.getElementById("titre").innerText = "Erreur de connexion 🚫";
+          console.error(error);
+        });
+    });
+
+    function pointer(action) {
+      if (!email) return;
+
+      fetch(`${scriptBase}?email=${encodeURIComponent(email)}&action=${action}`)
+        .then(res => res.text())
+        .then(response => {
+          alert(response); // Message de confirmation à l'utilisateur
+        })
+        .catch(error => {
+          alert("Erreur lors de l'envoi du pointage ❌");
           console.error(error);
         });
     }
