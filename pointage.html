@@ -102,25 +102,32 @@
 
   <script>
     const email = new URLSearchParams(window.location.search).get("email");
-    const scriptBase = "https://script.google.com/macros/s/AKfycbyyqKbPSjuTEAAheZ9BULtx6JssQ6j3n_joy1OkMM0mRC3v--sWbfjFZyRZkVwysCwexw/exec";
+    const scriptBase = "https://script.google.com/macros/s/AKfycbzoxTYPk4amCQeZmYox3x8UID9oCsddhSAZL_fuY0PsdrX-jcGN-3nF0-jGacukb5Bb4g/exec";
 
-    if (!email) {5
+    if (!email) {
       document.getElementById("titre").innerText = "Email manquant ❌";
     } else {
       fetch(`${scriptBase}?email=${encodeURIComponent(email)}`)
         .then(res => res.text())
         .then(response => {
-          if (response.startsWith("Bonjour")) {
+          if (response.startsWith("Bonjour") || response.startsWith("Bonsoir")) {
             document.getElementById("titre").innerText = response;
 
+            const now = new Date();
+            const heure = now.getHours();
             const buttons = document.getElementById("buttons");
 
-            buttons.innerHTML = `
-              <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=arrivee', '_blank')">Pointer Arrivée</button>
-              <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=urgence', '_blank')">Pointer Urgence</button>
-              <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=retour', '_blank')">Fin d'Urgence</button>
-              <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=descente', '_blank')">Pointer Descente</button>
-            `;
+            // Si l'heure est entre 22h et 6h, on cache les boutons
+            if (heure >= 22 || heure < 6) {
+              buttons.innerHTML = "<p>⛔ Le pointage est fermé entre 22h00 et 6h00.</p>";
+            } else {
+              buttons.innerHTML = `
+                <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=arrivee', '_blank')">Pointer Arrivée</button>
+                <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=urgence', '_blank')">Pointer Urgence</button>
+                <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=retour', '_blank')">Fin d'Urgence</button>
+                <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=descente', '_blank')">Pointer Descente</button>
+              `;
+            }
           } else {
             document.getElementById("titre").innerText = response;
           }
