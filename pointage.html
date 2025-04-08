@@ -102,9 +102,9 @@
 
   <script>
     const email = new URLSearchParams(window.location.search).get("email");
-    const scriptBase = "https://script.google.com/macros/s/AKfycbwHQxhtRwKb1RSsJwBG1DltzxEHyrPY0mL8GhjvvVOaOgnZMEnmKCVQyPuKVwRdGK5coA/exec";
+    const scriptBase = "https://script.google.com/macros/s/AKfycbwFhbkPcoekzKaB7Qgbug42f-Q9N_Lg-5avslFFRc6Xfu8KwQMfOO2W_sGzEtOQQ3y-Eg/exec";
 
-    if (!email) {
+    if (!email) {5
       document.getElementById("titre").innerText = "Email manquant ❌";
     } else {
       fetch(`${scriptBase}?email=${encodeURIComponent(email)}`)
