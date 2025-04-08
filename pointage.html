@@ -102,7 +102,7 @@
 
   <script>
     const email = new URLSearchParams(window.location.search).get("email");
-    const scriptBase = "https://script.google.com/macros/s/AKfycbzoxTYPk4amCQeZmYox3x8UID9oCsddhSAZL_fuY0PsdrX-jcGN-3nF0-jGacukb5Bb4g/exec";
+    const scriptBase = "https://script.google.com/macros/s/AKfycbyTBgwwg-OlxSqf4X3PrTA_9pNOcSmZuRbGmr_cxNftg9oJwzJeWlvTNQoACYzzJ2Ckwg/exec";
 
     if (!email) {
       document.getElementById("titre").innerText = "Email manquant ❌";
@@ -117,9 +117,9 @@
             const heure = now.getHours();
             const buttons = document.getElementById("buttons");
 
-            // Si l'heure est entre 22h et 6h, on cache les boutons
-            if (heure >= 22 || heure < 6) {
-              buttons.innerHTML = "<p>⛔ Le pointage est fermé entre 22h00 et 6h00.</p>";
+            // Si l'heure est entre 18h et 8h, on cache les boutons
+            if (heure >= 18 || heure < 8) {
+              buttons.innerHTML = "<p>⛔ Le pointage est fermé entre 18h00 et 8h00.</p>";
             } else {
               buttons.innerHTML = `
                 <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=arrivee', '_blank')">Pointer Arrivée</button>
