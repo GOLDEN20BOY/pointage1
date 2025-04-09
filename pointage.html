@@ -128,7 +128,7 @@
       <option value="Autre">Autre</option>
     </select>
     <input id="autre-lieu" type="text" placeholder="Si autre, précisez..." style="display:none;">
-    <button id="envoyer-arrivee" style="display:none;">Envoyer</button> <!-- Initialement caché -->
+    <button id="envoyer-arrivee">Envoyer</button>
   </div>
 
   <div id="urgence-container" class="input-container">
@@ -139,7 +139,7 @@
 
   <script>
     const email = new URLSearchParams(window.location.search).get("email");
-    const scriptBase = "https://script.google.com/macros/s/AKfycbym-0hzYB_X75uWaL1WagzOpehXDWzUw0S5js9hoWOvQMXCrXkks-_BHbneaHo6cUTUbg/exec";
+    const scriptBase = "https://script.google.com/macros/s/AKfycbwp5Wry2-9Px_H0yeRXNmqMrFs9VNE5iAeAGkirOHiECLfzgGdnZeN92ikS88arnEU9gw/exec";
 
     if (!email) {
       document.getElementById("titre").innerText = "Email manquant ❌";
@@ -158,7 +158,7 @@
             if (heure >= 18 || heure < 8) {
               buttons.innerHTML = "<p>⛔ Le pointage est fermé entre 18h00 et 8h00.</p>";
             } else {
-              buttons.innerHTML = ` 
+              buttons.innerHTML = `
                 <button id="btn-arrivee">Pointer Arrivée</button>
                 <button id="btn-urgence">Pointer Urgence</button>
                 <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=retour', '_blank')">Fin d'Urgence</button>
@@ -178,35 +178,30 @@
               document.getElementById('arrivee-container').style.display = 'none';
             });
 
-            // Logic for displaying the "Envoyer" button
+            // Ajoutez l'écouteur d'événement pour changer de lieu
             document.getElementById('lieu').addEventListener('change', function() {
-              const lieu = this.value;
-              const envoyerBtn = document.getElementById('envoyer-arrivee');
               const autreLieuInput = document.getElementById('autre-lieu');
-              
-              // Si "Bureau" est sélectionné, afficher le bouton "Envoyer"
-              if (lieu === "Bureau") {
-                envoyerBtn.style.display = 'block';
-                autreLieuInput.style.display = 'none';  // Masquer le champ "Autre"
+              if (this.value === 'Autre') {
+                autreLieuInput.style.display = 'block'; // Afficher le champ pour saisir un lieu
               } else {
-                envoyerBtn.style.display = 'none';  // Masquer le bouton "Envoyer" pour les autres choix
-                autreLieuInput.style.display = 'block';  // Afficher le champ "Autre"
+                autreLieuInput.style.display = 'none'; // Cacher le champ si un lieu est sélectionné
               }
             });
-
+            
             // Envoyer Arrivée
             document.getElementById('envoyer-arrivee').addEventListener('click', () => {
               const lieu = document.getElementById('lieu').value;
               const autreLieu = document.getElementById('autre-lieu').value;
-              const finalLieu = lieu === 'Autre' && autreLieu ? autreLieu : lieu;
-
+              const finalLieu = lieu === 'Autre' && autreLieu ? autreLieu : lieu; // Si Autre est sélectionné et qu'un autre lieu est saisi, utilisez-le.
+            
               fetch(`${scriptBase}?email=${encodeURIComponent(email)}&action=arrivee&lieu=${encodeURIComponent(finalLieu)}`)
                 .then(response => response.text())
                 .then(response => {
                   document.getElementById("titre").innerText = response;
-                  document.getElementById('arrivee-container').style.display = 'none';
+                  document.getElementById('arrivee-container').style.display = 'none'; // Cache le formulaire après l'envoi
                 });
             });
+
 
             // Envoyer Urgence
             document.getElementById('envoyer-urgence').addEventListener('click', () => {
