@@ -149,7 +149,7 @@
 
   <script>
     const email = new URLSearchParams(window.location.search).get("email");
-    const scriptBase = "https://script.google.com/macros/s/AKfycbyYXBc0f-ToR2pZy2-q48prR28fdhbjEV4pISddNsB8LORpW291fctzaTy8391bSZUxzQ/exec";
+    const scriptBase = "https://script.google.com/macros/s/AKfycbwcgig5E7bySpAhOOCrZWA7T7mdhTMd6sFwkAFTOLumclkyuxA9z7CkINyeMW-M1gf98w/exec";
 
     if (!email) {
       document.getElementById("titre").innerText = "Email manquant ❌";
@@ -165,16 +165,16 @@
             const buttons = document.getElementById("buttons");
 
             // Si l'heure est entre 3h et 8h, on cache les boutons
-            if (heure >= 3 || heure < 8) {
-              buttons.innerHTML = "<p>⛔ Le pointage est fermé entre 3h00 et 8h00.</p>";
-            } else {
+            //if (heure >= 3 || heure < 8) {
+             // buttons.innerHTML = "<p>⛔ Le pointage est fermé entre 3h00 et 8h00.</p>";
+           // } else {
               buttons.innerHTML = `
                 <button id="btn-arrivee">Pointer Arrivée</button>
                 <button id="btn-urgence">Pointer Urgence</button>
                 <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=retour', '_blank')">Fin d'Urgence</button>
                 <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=descente', '_blank')">Pointer Descente</button>
               `;
-            }
+           // }
 
             // Actions pour Arrivée
             document.getElementById('btn-arrivee').addEventListener('click', () => {
