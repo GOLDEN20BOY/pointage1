@@ -45,21 +45,21 @@
     }
 
     button:nth-child(1) {
-      background: #28a745; /* vert pour arrivée */
+      background: #28a745;
     }
     button:nth-child(1):hover {
       background: #218838;
     }
 
     button:nth-child(2) {
-      background: #dc3545; /* rouge pour urgence */
+      background: #dc3545;
     }
     button:nth-child(2):hover {
       background: #c82333;
     }
 
     button:nth-child(3) {
-      background: #ffc107; /* jaune/orange pour retour */
+      background: #ffc107;
       color: black;
     }
     button:nth-child(3):hover {
@@ -67,30 +67,50 @@
     }
 
     button:nth-child(4) {
-      background: #007bff; /* bleu pour descente */
+      background: #007bff;
     }
     button:nth-child(4):hover {
       background: #0056b3;
     }
 
-    /* Responsive pour mobile */
+    .form-container {
+      margin-top: 1em;
+      padding: 1em;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    select, input[type="text"] {
+      padding: 0.6em;
+      width: 100%;
+      margin-top: 0.5em;
+      margin-bottom: 1em;
+      font-size: 1em;
+    }
+
+    #formulaire, #urgenceForm {
+      display: none;
+    }
+
+    .action-btns {
+      display: flex;
+      justify-content: space-between;
+      gap: 1em;
+    }
+
+    .action-btns button {
+      flex: 1;
+      color: white;
+    }
+
     @media (max-width: 600px) {
-      body {
-        padding: 1em;
-      }
-
-      h1#bimo-title {
-        font-size: 2em;
-      }
-
-      h2#titre {
-        font-size: 1.2em;
-      }
-
       button {
         width: 90%;
-        font-size: 1em;
-        padding: 0.8em;
       }
     }
   </style>
@@ -98,42 +118,123 @@
 <body>
   <h1 id="bimo-title">BIMOPOINTAGE</h1>
   <h2 id="titre">Chargement...</h2>
-  <div id="buttons"></div>
+
+  <div id="buttons">
+    <!-- Les boutons seront injectés dynamiquement -->
+  </div>
+
+  <div class="form-container" id="formulaire">
+    <label for="lieuSelect">Quel est le lieu d'arrivée ?</label>
+    <select id="lieuSelect">
+      <option value="bureau">Bureau</option>
+      <option value="autre">Autre</option>
+    </select>
+    <input type="text" id="lieuAutre" placeholder="Précisez le lieu" style="display:none;">
+    <div class="action-btns">
+      <button onclick="envoyerArrivee()">Envoyer</button>
+      <button onclick="annulerForm()">Annuler</button>
+    </div>
+  </div>
+
+  <div class="form-container" id="urgenceForm">
+    <label for="raisonUrgence">Quelle est la raison de l'urgence ?</label>
+    <input type="text" id="raisonUrgence" placeholder="Ex: maladie, urgence familiale...">
+    <div class="action-btns">
+      <button onclick="envoyerUrgence()">Envoyer</button>
+      <button onclick="annulerForm()">Annuler</button>
+    </div>
+  </div>
 
   <script>
     const email = new URLSearchParams(window.location.search).get("email");
     const scriptBase = "https://script.google.com/macros/s/AKfycbxmVQIs9w_VmTWM33yq-c_EB1xvdickMRTonOFqAziqQVM0qOhJp8Hjvx9_nfZRebwI/exec";
 
+    const buttonsDiv = document.getElementById("buttons");
+    const titre = document.getElementById("titre");
+    const formArrivee = document.getElementById("formulaire");
+    const formUrgence = document.getElementById("urgenceForm");
+
+    function annulerForm() {
+      formArrivee.style.display = "none";
+      formUrgence.style.display = "none";
+      afficherBoutons();
+    }
+
+    function afficherBoutons() {
+      buttonsDiv.innerHTML = `
+        <button onclick="afficherFormArrivee()">Pointer Arrivée</button>
+        <button onclick="afficherFormUrgence()">Pointer Urgence</button>
+        <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=retour', '_blank')">Fin d'Urgence</button>
+        <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=descente', '_blank')">Pointer Descente</button>
+      `;
+    }
+
+    function afficherFormArrivee() {
+      buttonsDiv.innerHTML = "";
+      formArrivee.style.display = "block";
+      formUrgence.style.display = "none";
+    }
+
+    function afficherFormUrgence() {
+      buttonsDiv.innerHTML = "";
+      formUrgence.style.display = "block";
+      formArrivee.style.display = "none";
+    }
+
+    document.getElementById("lieuSelect").addEventListener("change", () => {
+      const autre = document.getElementById("lieuAutre");
+      autre.style.display = document.getElementById("lieuSelect").value === "autre" ? "block" : "none";
+    });
+
+    function envoyerArrivee() {
+      const lieu = document.getElementById("lieuSelect").value;
+      const precis = document.getElementById("lieuAutre").value;
+      let url = `${scriptBase}?email=${encodeURIComponent(email)}&action=arrivee`;
+
+      if (lieu === "autre" && precis.trim()) {
+        url += `&lieu=autre&precis=${encodeURIComponent(precis)}`;
+      } else {
+        url += `&lieu=bureau`;
+      }
+
+      window.open(url, "_blank");
+      annulerForm();
+    }
+
+    function envoyerUrgence() {
+      const raison = document.getElementById("raisonUrgence").value.trim();
+      if (raison === "") {
+        alert("Veuillez saisir une raison.");
+        return;
+      }
+      const url = `${scriptBase}?email=${encodeURIComponent(email)}&action=urgence&raison=${encodeURIComponent(raison)}`;
+      window.open(url, "_blank");
+      annulerForm();
+    }
+
     if (!email) {
-      document.getElementById("titre").innerText = "Email manquant ❌";
+      titre.innerText = "Email manquant ❌";
     } else {
       fetch(`${scriptBase}?email=${encodeURIComponent(email)}`)
         .then(res => res.text())
         .then(response => {
           if (response.startsWith("Bonjour") || response.startsWith("Bonsoir")) {
-            document.getElementById("titre").innerText = response;
+            titre.innerText = response;
 
             const now = new Date();
             const heure = now.getHours();
-            const buttons = document.getElementById("buttons");
 
-            // Si l'heure est entre 18h et 8h, on cache les boutons
             if (heure >= 18 || heure < 8) {
-              buttons.innerHTML = "<p>⛔ Le pointage est fermé entre 18h00 et 8h00.</p>";
+              buttonsDiv.innerHTML = "<p>⛔ Le pointage est fermé entre 18h00 et 8h00.</p>";
             } else {
-              buttons.innerHTML = `
-                <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=arrivee', '_blank')">Pointer Arrivée</button>
-                <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=urgence', '_blank')">Pointer Urgence</button>
-                <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=retour', '_blank')">Fin d'Urgence</button>
-                <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=descente', '_blank')">Pointer Descente</button>
-              `;
+              afficherBoutons();
             }
           } else {
-            document.getElementById("titre").innerText = response;
+            titre.innerText = response;
           }
         })
         .catch(error => {
-          document.getElementById("titre").innerText = "Erreur de connexion 🚫";
+          titre.innerText = "Erreur de connexion 🚫";
           console.error(error);
         });
     }
