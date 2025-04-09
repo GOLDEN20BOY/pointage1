@@ -1,193 +1,101 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pointage</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 2em;
-      text-align: center;
-      background: #f0f4f8;
-    }
-
-    h1#bimo-title {
-      font-size: 2.5em;
-      color: #0066cc;
-      margin-bottom: 1em;
-      letter-spacing: 2px;
-      font-weight: bold;
-    }
-
-    h2#titre {
-      font-size: 1.5em;
-      margin-bottom: 1.5em;
-      color: #333;
-    }
-
-    #buttons {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1em;
-    }
-
-    button {
-      width: 70%;
-      padding: 1em;
-      font-size: 1em;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      color: white;
-      transition: background 0.3s ease;
-    }
-
-    button:nth-child(1) {
-      background: #28a745; /* vert pour arrivée */
-    }
-    button:nth-child(1):hover {
-      background: #218838;
-    }
-
-    button:nth-child(2) {
-      background: #dc3545; /* rouge pour urgence */
-    }
-    button:nth-child(2):hover {
-      background: #c82333;
-    }
-
-    button:nth-child(3) {
-      background: #ffc107; /* jaune/orange pour retour */
-      color: black;
-    }
-    button:nth-child(3):hover {
-      background: #e0a800;
-    }
-
-    button:nth-child(4) {
-      background: #007bff; /* bleu pour descente */
-    }
-    button:nth-child(4):hover {
-      background: #0056b3;
-    }
-
-    /* Responsive pour mobile */
-    @media (max-width: 600px) {
-      body {
-        padding: 1em;
-      }
-
-      h1#bimo-title {
-        font-size: 2em;
-      }
-
-      h2#titre {
-        font-size: 1.2em;
-      }
-
-      button {
-        width: 90%;
-        font-size: 1em;
-        padding: 0.8em;
-      }
-    }
-
-    /* Style pour les champs dynamiques */
-    .input-container {
-      display: none;
-      margin-top: 1em;
-    }
-
-    select, input {
-      width: 80%;
-      padding: 0.5em;
-      font-size: 1em;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      margin: 0.5em 0;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pointage</title>
+    <style>
+        /* Styles de base */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        select, input, button {
+            margin: 10px;
+            padding: 5px;
+            font-size: 16px;
+        }
+        #lieuArriveeContainer, #raisonUrgenceContainer {
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-  <h1 id="bimo-title">BIMOPOINTAGE</h1>
-  <h2 id="titre">Chargement...</h2>
-  <div id="buttons"></div>
+    <h2>Pointage</h2>
+    
+    <!-- Formulaire avec sélection de l'action -->
+    <form id="pointageForm">
+        <label for="action">Choisissez une action :</label>
+        <select id="action" name="action" onchange="afficherChamps()">
+            <option value="">Sélectionnez une action</option>
+            <option value="arrivee">Arrivée</option>
+            <option value="urgence">Urgence</option>
+            <option value="retour">Retour</option>
+            <option value="descente">Descente</option>
+        </select>
+        
+        <!-- Champ pour Arrivée -->
+        <div id="lieuArriveeContainer">
+            <label for="lieuArrivee">Lieu d'arrivée :</label>
+            <select id="lieuArrivee" name="lieuArrivee" onchange="afficherChampAutre()">
+                <option value="Bureau">Bureau</option>
+                <option value="Autre">Autre</option>
+            </select>
+            <input type="text" id="autreLieu" name="autreLieu" placeholder="Entrez un autre lieu" style="display:none;">
+        </div>
 
-  <div id="arrivee-container" class="input-container">
-    <label for="lieuArrivee">Lieu d'arrivée :</label>
-    <select id="lieuArrivee" onchange="toggleLieuInput()">
-      <option value="Bureau">Bureau</option>
-      <option value="Autre">Autre</option>
-    </select>
-    <div id="autreLieuContainer" style="display: none;">
-      <label for="autreLieu">Veuillez spécifier le lieu :</label>
-      <input type="text" id="autreLieu" placeholder="Entrez le lieu d'arrivée">
-    </div>
-  </div>
+        <!-- Champ pour Urgence -->
+        <div id="raisonUrgenceContainer">
+            <label for="raisonUrgence">Raison de l'urgence :</label>
+            <input type="text" id="raisonUrgence" name="raisonUrgence" placeholder="Raison de l'urgence" required>
+        </div>
 
-  <div id="urgence-container" class="input-container">
-    <label for="raisonUrgence">Raison d'urgence :</label>
-    <input type="text" id="raisonUrgence" placeholder="Entrez la raison d'urgence">
-  </div>
+        <!-- Bouton d'envoi -->
+        <button type="button" onclick="envoyerFormulaire()">Envoyer</button>
+    </form>
 
-  <script>
-    const email = new URLSearchParams(window.location.search).get("email");
-    const scriptBase = "https://script.google.com/macros/s/AKfycbwTnOSBc6AxrMdNftxMVZoVQQvluGzz28RjXmdpFbfi8XuiRjkwcPkqOqC6yj3wYR6m3g/exec";
+    <script>
+        // Afficher les champs en fonction de l'action choisie
+        function afficherChamps() {
+            var action = document.getElementById("action").value;
+            document.getElementById("lieuArriveeContainer").style.display = "none";
+            document.getElementById("raisonUrgenceContainer").style.display = "none";
+            document.getElementById("autreLieu").style.display = "none"; // Cacher le champ de lieu
 
-    if (!email) {
-      document.getElementById("titre").innerText = "Email manquant ❌";
-    } else {
-      fetch(`${scriptBase}?email=${encodeURIComponent(email)}`)
-        .then(res => res.text())
-        .then(response => {
-          if (response.startsWith("Bonjour") || response.startsWith("Bonsoir")) {
-            document.getElementById("titre").innerText = response;
-
-            const now = new Date();
-            const heure = now.getHours();
-            const buttons = document.getElementById("buttons");
-
-            // Si l'heure est entre 18h et 8h, on cache les boutons
-            if (heure >= 18 || heure < 8) {
-              buttons.innerHTML = "<p>⛔ Le pointage est fermé entre 18h00 et 8h00.</p>";
-            } else {
-              buttons.innerHTML = `
-                <button onclick="showArriveeForm()">Pointer Arrivée</button>
-                <button onclick="showUrgenceForm()">Pointer Urgence</button>
-                <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=retour', '_blank')">Fin d'Urgence</button>
-                <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=descente', '_blank')">Pointer Descente</button>
-              `;
+            if (action === "arrivee") {
+                document.getElementById("lieuArriveeContainer").style.display = "block";
+            } else if (action === "urgence") {
+                document.getElementById("raisonUrgenceContainer").style.display = "block";
             }
-          } else {
-            document.getElementById("titre").innerText = response;
-          }
-        })
-        .catch(error => {
-          document.getElementById("titre").innerText = "Erreur de connexion 🚫";
-          console.error(error);
-        });
-    }
+        }
 
-    function showArriveeForm() {
-      document.getElementById("arrivee-container").style.display = "block";
-      document.getElementById("urgence-container").style.display = "none";
-    }
+        // Afficher le champ "Autre" si l'utilisateur sélectionne "Autre" dans lieu d'arrivée
+        function afficherChampAutre() {
+            var lieuArrivee = document.getElementById("lieuArrivee").value;
+            if (lieuArrivee === "Autre") {
+                document.getElementById("autreLieu").style.display = "block";
+            } else {
+                document.getElementById("autreLieu").style.display = "none";
+            }
+        }
 
-    function showUrgenceForm() {
-      document.getElementById("urgence-container").style.display = "block";
-      document.getElementById("arrivee-container").style.display = "none";
-    }
+        // Fonction pour envoyer le formulaire
+        function envoyerFormulaire() {
+            var formData = new FormData(document.getElementById("pointageForm"));
+            var url = "https://script.google.com/macros/s/AKfycbyjPDabCtVZnlf6-aYWo0zFJyOSfvcTc_dH1qnbfyIBX0CzagTFXWmBbEoFb5Spn-GUXA/exec";
 
-    function toggleLieuInput() {
-      const lieuArrivee = document.getElementById("lieuArrivee").value;
-      if (lieuArrivee === "Autre") {
-        document.getElementById("autreLieuContainer").style.display = "block";
-      } else {
-        document.getElementById("autreLieuContainer").style.display = "none";
-      }
-    }
-  </script>
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                },
+                body: new URLSearchParams(formData)
+            })
+            .then(response => response.text())
+            .then(data => alert(data))
+            .catch(error => alert("Erreur: " + error));
+        }
+    </script>
 </body>
 </html>
