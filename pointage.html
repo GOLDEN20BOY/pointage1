@@ -164,9 +164,9 @@
             const heure = now.getHours();
             const buttons = document.getElementById("buttons");
 
-            // Si l'heure est entre 18h et 8h, on cache les boutons
-            if (heure >= 3 || heure < 8) {
-              buttons.innerHTML = "<p>⛔ Le pointage est fermé entre 8h00 et 3h00.</p>";
+            // Si l'heure est entre 3h et 8h, on cache les boutons
+            if (heure >= 8 || heure < 3) {
+              buttons.innerHTML = "<p>⛔ Le pointage est fermé entre 3h00 et 8h00.</p>";
             } else {
               buttons.innerHTML = `
                 <button id="btn-arrivee">Pointer Arrivée</button>
