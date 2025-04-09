@@ -93,26 +93,20 @@
         padding: 0.8em;
       }
     }
-    
+
+    /* Style pour les champs dynamiques */
     .input-container {
       display: none;
       margin-top: 1em;
-      text-align: center;
     }
 
-    .input-container select, .input-container input {
+    select, input {
+      width: 80%;
       padding: 0.5em;
       font-size: 1em;
-      width: 70%;
-      margin-top: 1em;
-    }
-
-    .input-container button {
-      background: #007bff;
-      color: white;
-      padding: 1em;
-      margin-top: 1em;
-      width: 50%;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      margin: 0.5em 0;
     }
   </style>
 </head>
@@ -122,24 +116,25 @@
   <div id="buttons"></div>
 
   <div id="arrivee-container" class="input-container">
-    <label for="lieu">Choisissez votre lieu d'arrivée :</label>
-    <select id="lieu">
+    <label for="lieuArrivee">Lieu d'arrivée :</label>
+    <select id="lieuArrivee" onchange="toggleLieuInput()">
       <option value="Bureau">Bureau</option>
       <option value="Autre">Autre</option>
     </select>
-    <input id="autre-lieu" type="text" placeholder="Si autre, précisez..." style="display:none;">
-    <button id="envoyer-arrivee">Envoyer</button>
+    <div id="autreLieuContainer" style="display: none;">
+      <label for="autreLieu">Veuillez spécifier le lieu :</label>
+      <input type="text" id="autreLieu" placeholder="Entrez le lieu d'arrivée">
+    </div>
   </div>
 
   <div id="urgence-container" class="input-container">
-    <label for="raison">Raison d'urgence :</label>
-    <input id="raison" type="text" placeholder="Entrez la raison d'urgence">
-    <button id="envoyer-urgence">Envoyer</button>
+    <label for="raisonUrgence">Raison d'urgence :</label>
+    <input type="text" id="raisonUrgence" placeholder="Entrez la raison d'urgence">
   </div>
 
   <script>
     const email = new URLSearchParams(window.location.search).get("email");
-    const scriptBase = "https://script.google.com/macros/s/AKfycbyvwqzlHOt8qMHGcwoVNrH3vQnhAcFLgDDSNE9uqgY57qDc0GFNWqvCs8n_puwL7VVgbQ/exec";
+    const scriptBase = "https://script.google.com/macros/s/AKfycbwTnOSBc6AxrMdNftxMVZoVQQvluGzz28RjXmdpFbfi8XuiRjkwcPkqOqC6yj3wYR6m3g/exec";
 
     if (!email) {
       document.getElementById("titre").innerText = "Email manquant ❌";
@@ -159,50 +154,12 @@
               buttons.innerHTML = "<p>⛔ Le pointage est fermé entre 18h00 et 8h00.</p>";
             } else {
               buttons.innerHTML = `
-                <button id="btn-arrivee">Pointer Arrivée</button>
-                <button id="btn-urgence">Pointer Urgence</button>
+                <button onclick="showArriveeForm()">Pointer Arrivée</button>
+                <button onclick="showUrgenceForm()">Pointer Urgence</button>
                 <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=retour', '_blank')">Fin d'Urgence</button>
                 <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=descente', '_blank')">Pointer Descente</button>
               `;
             }
-
-            // Actions pour Arrivée
-            document.getElementById('btn-arrivee').addEventListener('click', () => {
-              document.getElementById('arrivee-container').style.display = 'block';
-              document.getElementById('urgence-container').style.display = 'none';
-            });
-
-            // Actions pour Urgence
-            document.getElementById('btn-urgence').addEventListener('click', () => {
-              document.getElementById('urgence-container').style.display = 'block';
-              document.getElementById('arrivee-container').style.display = 'none';
-            });
-
-            // Envoyer Arrivée
-            document.getElementById('envoyer-arrivee').addEventListener('click', () => {
-              const lieu = document.getElementById('lieu').value;
-              const autreLieu = document.getElementById('autre-lieu').value;
-              const finalLieu = lieu === 'Autre' && autreLieu ? autreLieu : lieu;
-
-              fetch(`${scriptBase}?email=${encodeURIComponent(email)}&action=arrivee&lieu=${encodeURIComponent(finalLieu)}`)
-                .then(response => response.text())
-                .then(response => {
-                  document.getElementById("titre").innerText = response;
-                  document.getElementById('arrivee-container').style.display = 'none';
-                });
-            });
-
-            // Envoyer Urgence
-            document.getElementById('envoyer-urgence').addEventListener('click', () => {
-              const raison = document.getElementById('raison').value;
-
-              fetch(`${scriptBase}?email=${encodeURIComponent(email)}&action=urgence&raison=${encodeURIComponent(raison)}`)
-                .then(response => response.text())
-                .then(response => {
-                  document.getElementById("titre").innerText = response;
-                  document.getElementById('urgence-container').style.display = 'none';
-                });
-            });
           } else {
             document.getElementById("titre").innerText = response;
           }
@@ -211,6 +168,25 @@
           document.getElementById("titre").innerText = "Erreur de connexion 🚫";
           console.error(error);
         });
+    }
+
+    function showArriveeForm() {
+      document.getElementById("arrivee-container").style.display = "block";
+      document.getElementById("urgence-container").style.display = "none";
+    }
+
+    function showUrgenceForm() {
+      document.getElementById("urgence-container").style.display = "block";
+      document.getElementById("arrivee-container").style.display = "none";
+    }
+
+    function toggleLieuInput() {
+      const lieuArrivee = document.getElementById("lieuArrivee").value;
+      if (lieuArrivee === "Autre") {
+        document.getElementById("autreLieuContainer").style.display = "block";
+      } else {
+        document.getElementById("autreLieuContainer").style.display = "none";
+      }
     }
   </script>
 </body>
