@@ -8,21 +8,79 @@
         /* Styles de base */
         body {
             font-family: Arial, sans-serif;
-            padding: 20px;
+            padding: 2em;
+            text-align: center;
+            background: #f0f4f8;
         }
+
+        h1 {
+            font-size: 2.5em;
+            color: #0066cc;
+            margin-bottom: 1em;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            margin-bottom: 1.5em;
+            color: #333;
+        }
+
         select, input, button {
             margin: 10px;
-            padding: 5px;
+            padding: 10px;
             font-size: 16px;
+            width: 80%;
+            border-radius: 8px;
+            border: 1px solid #ccc;
         }
+
+        button {
+            width: 80%;
+            padding: 1em;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #007bff;
+        }
+
         #lieuArriveeContainer, #raisonUrgenceContainer {
             display: none;
             margin-top: 10px;
         }
+
+        /* Responsive pour mobile */
+        @media (max-width: 600px) {
+            body {
+                padding: 1em;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.2em;
+            }
+
+            select, input, button {
+                width: 90%;
+                font-size: 1em;
+                padding: 0.8em;
+            }
+        }
     </style>
 </head>
 <body>
-    <h2>Pointage</h2>
+    <h1>Pointage</h1>
+    <h2>Veuillez sélectionner une action</h2>
     
     <!-- Formulaire avec sélection de l'action -->
     <form id="pointageForm">
