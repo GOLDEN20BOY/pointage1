@@ -12,28 +12,34 @@
       padding: 2em;
       text-align: center;
     }
-
     h1 {
       font-size: 2.5em;
       color: #0077cc;
       margin-bottom: 0.5em;
     }
-
     h2 {
       font-size: 1.3em;
       margin-bottom: 1.5em;
       color: #333;
     }
-
-    #buttons,
-    .input-container {
+    .daily-message {
+      margin-bottom: 2em;
+    }
+    .daily-message p {
+      margin: 0.3em 0;
+    }
+    .quote {
+      font-style: italic;
+      font-size: 1em;
+      color: #555;
+    }
+    #buttons, .input-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 1em;
       margin-bottom: 2em;
     }
-
     button {
       width: 80%;
       max-width: 300px;
@@ -45,7 +51,6 @@
       color: white;
       transition: background 0.3s ease;
     }
-
     button:nth-child(1) { background: #28a745; }
     button:nth-child(1):hover { background: #218838; }
     button:nth-child(2) { background: #dc3545; }
@@ -54,10 +59,7 @@
     button:nth-child(3):hover { background: #e0a800; }
     button:nth-child(4) { background: #007bff; }
     button:nth-child(4):hover { background: #0056b3; }
-
-    select,
-    input,
-    textarea {
+    select, input, textarea {
       width: 80%;
       max-width: 300px;
       padding: 0.8em;
@@ -65,12 +67,9 @@
       border-radius: 5px;
       font-size: 1em;
     }
-
-    #secteur-container,
-    #autre-lieu {
+    #secteur-container, #autre-lieu {
       display: none;
     }
-
     .social-footer {
       display: flex;
       justify-content: center;
@@ -78,21 +77,16 @@
       flex-wrap: wrap;
       margin-top: 3em;
     }
-
     .social-footer a img {
       width: 35px;
       height: 35px;
       transition: transform 0.3s ease;
     }
-
     .social-footer a:hover img {
       transform: scale(1.2);
     }
-
     @media (max-width: 600px) {
-      button,
-      input,
-      select {
+      button, input, select {
         width: 90%;
       }
     }
@@ -101,7 +95,10 @@
 <body>
   <h1>BIMOPOINTAGE</h1>
   <h2 id="titre">Chargement...</h2>
-
+  <div class="daily-message">
+    <p id="daily-text"><font color="green">Chargement message...</font></p>
+    <p id="quote" class="quote">Chargement citation...</p>
+  </div>
   <div id="buttons"></div>
 
   <div id="arrivee-container" class="input-container" style="display: none;">
@@ -122,7 +119,7 @@
   </div>
 
   <div class="social-footer">
-    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn"></a>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="GitHub"></a>
     <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp"></a>
     <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook"></a>
     <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/841/841364.png" alt="Site Web"></a>
@@ -131,7 +128,35 @@
 
   <script>
     const email = new URLSearchParams(window.location.search).get("email");
-    const scriptBase = "https://script.google.com/macros/s/AKfycbwlgguXm1QAWDqW42cnCwexXNy4hRdze9OsEav9IXXxW0xilmzgTuHRhSK2FcCBQ1fS_w/exec";
+    const scriptBase = "https://script.google.com/macros/s/AKfycbx-FY7Y-xZvqsoluFa8qF7eAVsQgpT6WYWQfpvcrfVEbCV3L7-_6YICgZ6WBL2aLtmR7g/exec";
+
+    const dailyMessages = {
+      "Monday": "Commence la semaine avec énergie 💪",
+      "Tuesday": "Un jour de plus vers tes objectifs 🎯",
+      "Wednesday": "La moitié est faite, tiens bon ! 🏃",
+      "Thursday": "Encore un effort, t’es presque au bout 🔥",
+      "Friday": "Finis fort la semaine 💥",
+      "Saturday": "Une touche de progrès ce week-end ? 😊",
+      "Sunday": "Recharge tes batteries pour demain ⚡"
+    };
+
+    const quotes = [
+      "Fais de ta vie un rêve, et d’un rêve, une réalité. – Antoine de Saint-Exupéry",
+      "Il n'y a qu'une façon d'échouer, c'est d'abandonner avant d'avoir réussi. – Georges Clémenceau",
+      "Le succès, c'est d'aller d’échec en échec sans perdre son enthousiasme. – Winston Churchill",
+      "Le seul endroit où le succès vient avant le travail, c’est dans le dictionnaire. – Vidal Sassoon",
+      "Ne rêve pas ta vie, vis tes rêves. – Anonyme",
+      "Crois en toi et tout sera possible. – Anonyme",
+      "N'attends pas le moment parfait, saisis l’instant et rends-le parfait. – Anonyme"
+    ];
+
+    function afficherMessageEtCitation() {
+      const jour = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+      const message = dailyMessages[jour] || "Bonne journée ! 😊";
+      const citation = quotes[Math.floor(Math.random() * quotes.length)];
+      document.getElementById("daily-text").innerHTML = `<font color="green">${message}</font>`;
+      document.getElementById("quote").textContent = citation;
+    }
 
     function obtenirLocalisation(callback) {
       if (navigator.geolocation) {
@@ -145,6 +170,8 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
+      afficherMessageEtCitation();
+
       if (!email) {
         document.getElementById("titre").innerText = "Email manquant ❌";
         return;
@@ -179,6 +206,7 @@
               secteur.innerHTML = "";
               secteur.style.display = "none";
               autre.style.display = "none";
+
               if (val === "Zone Sacré Coeur") {
                 secteur.style.display = "block";
                 for (let i = 1; i <= 11; i++) secteur.innerHTML += `<option value="1S${i}">1S${i}</option>`;
@@ -191,17 +219,14 @@
             document.getElementById("envoyer-arrivee").onclick = () => {
               const lieu = document.getElementById("lieu").value;
               const autreLieu = document.getElementById("autre-lieu").value.trim();
-
               if (lieu === "Autre" && autreLieu === "") {
                 alert("Veuillez renseigner le lieu d’arrivée.");
                 return;
               }
-
               let finalLieu = lieu;
               if (lieu === "Zone Sacré Coeur" || lieu === "Zone SICAP")
                 finalLieu = document.getElementById("secteur-container").value;
-              else if (lieu === "Autre")
-                finalLieu = autreLieu;
+              else if (lieu === "Autre") finalLieu = autreLieu;
 
               obtenirLocalisation((lat, lng) => {
                 let url = `${scriptBase}?email=${encodeURIComponent(email)}&action=arrivee&lieu=${encodeURIComponent(finalLieu)}`;
@@ -219,7 +244,6 @@
                 alert("Veuillez renseigner la raison de l’urgence.");
                 return;
               }
-
               fetch(`${scriptBase}?email=${encodeURIComponent(email)}&action=urgence&raison=${encodeURIComponent(raison)}`)
                 .then(r => r.text())
                 .then(msg => {
