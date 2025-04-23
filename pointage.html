@@ -1,40 +1,42 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pointage</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pointage BIMO</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background: #f4f7fa;
+      margin: 0;
       padding: 2em;
       text-align: center;
-      background: #f0f4f8;
     }
 
-    h1#bimo-title {
+    h1 {
       font-size: 2.5em;
-      color: #0066cc;
-      margin-bottom: 1em;
-      letter-spacing: 2px;
-      font-weight: bold;
+      color: #0077cc;
+      margin-bottom: 0.5em;
     }
 
-    h2#titre {
-      font-size: 1.5em;
+    h2 {
+      font-size: 1.3em;
       margin-bottom: 1.5em;
       color: #333;
     }
 
-    #buttons {
+    #buttons,
+    .input-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 1em;
+      margin-bottom: 2em;
     }
 
     button {
-      width: 70%;
+      width: 80%;
+      max-width: 300px;
       padding: 1em;
       font-size: 1em;
       border: none;
@@ -44,195 +46,192 @@
       transition: background 0.3s ease;
     }
 
-    button:nth-child(1) {
-      background: #28a745; /* vert pour arrivée */
-    }
-    button:nth-child(1):hover {
-      background: #218838;
+    button:nth-child(1) { background: #28a745; }
+    button:nth-child(1):hover { background: #218838; }
+    button:nth-child(2) { background: #dc3545; }
+    button:nth-child(2):hover { background: #c82333; }
+    button:nth-child(3) { background: #ffc107; color: black; }
+    button:nth-child(3):hover { background: #e0a800; }
+    button:nth-child(4) { background: #007bff; }
+    button:nth-child(4):hover { background: #0056b3; }
+
+    select,
+    input,
+    textarea {
+      width: 80%;
+      max-width: 300px;
+      padding: 0.8em;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1em;
     }
 
-    button:nth-child(2) {
-      background: #dc3545; /* rouge pour urgence */
-    }
-    button:nth-child(2):hover {
-      background: #c82333;
-    }
-
-    button:nth-child(3) {
-      background: #ffc107; /* jaune/orange pour retour */
-      color: black;
-    }
-    button:nth-child(3):hover {
-      background: #e0a800;
-    }
-
-    button:nth-child(4) {
-      background: #007bff; /* bleu pour descente */
-    }
-    button:nth-child(4):hover {
-      background: #0056b3;
-    }
+    #secteur-container,
     #autre-lieu {
-      display: none; /* Cache le champ au départ */
-      margin: 0 auto; /* Centre horizontalement */
-      width: 70%; /* Vous pouvez ajuster la largeur selon vos besoins */
-      padding: 0.5em;
-      font-size: 1em;
-      text-align: center; /* Centre le texte à l'intérieur du champ */
-      display: block; /* Assurez-vous que le champ est un bloc pour le centrage */
-    }
-
-
-    /* Responsive pour mobile */
-    @media (max-width: 600px) {
-      body {
-        padding: 1em;
-      }
-
-      h1#bimo-title {
-        font-size: 2em;
-      }
-
-      h2#titre {
-        font-size: 1.2em;
-      }
-
-      button {
-        width: 90%;
-        font-size: 1em;
-        padding: 0.8em;
-      }
-    }
-    
-    .input-container {
       display: none;
-      margin-top: 1em;
-      text-align: center;
     }
 
-    .input-container select, .input-container input {
-      padding: 0.5em;
-      font-size: 1em;
-      width: 70%;
-      margin-top: 1em;
+    .social-footer {
+      display: flex;
+      justify-content: center;
+      gap: 1.2em;
+      flex-wrap: wrap;
+      margin-top: 3em;
     }
 
-    .input-container button {
-      background: #007bff;
-      color: white;
-      padding: 1em;
-      margin-top: 1em;
-      width: 50%;
+    .social-footer a img {
+      width: 35px;
+      height: 35px;
+      transition: transform 0.3s ease;
+    }
+
+    .social-footer a:hover img {
+      transform: scale(1.2);
+    }
+
+    @media (max-width: 600px) {
+      button,
+      input,
+      select {
+        width: 90%;
+      }
     }
   </style>
 </head>
 <body>
-  <h1 id="bimo-title">BIMOPOINTAGE</h1>
+  <h1>BIMOPOINTAGE</h1>
   <h2 id="titre">Chargement...</h2>
+
   <div id="buttons"></div>
 
-  <div id="arrivee-container" class="input-container">
-    <label for="lieu">Choisissez votre lieu d'arrivée :</label>
+  <div id="arrivee-container" class="input-container" style="display: none;">
     <select id="lieu">
       <option value="Bureau">Bureau</option>
+      <option value="Zone Sacré Coeur">Zone Sacré Coeur</option>
+      <option value="Zone SICAP">Zone SICAP</option>
       <option value="Autre">Autre</option>
     </select>
-    <input id="autre-lieu" type="text" placeholder="Si autre, précisez..." style="display:none;">
+    <select id="secteur-container"></select>
+    <input id="autre-lieu" type="text" placeholder="Si autre, précisez...">
     <button id="envoyer-arrivee">Envoyer</button>
   </div>
 
-  <div id="urgence-container" class="input-container">
-    <label for="raison">Raison d'urgence :</label>
-    <input id="raison" type="text" placeholder="Entrez la raison d'urgence">
+  <div id="urgence-container" class="input-container" style="display: none;">
+    <input id="raison" type="text" placeholder="Raison d'urgence">
     <button id="envoyer-urgence">Envoyer</button>
+  </div>
+
+  <div class="social-footer">
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="GitHub"></a>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp"></a>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook"></a>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/841/841364.png" alt="Site Web"></a>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733558.png" alt="Instagram"></a>
   </div>
 
   <script>
     const email = new URLSearchParams(window.location.search).get("email");
     const scriptBase = "https://script.google.com/macros/s/AKfycbwlgguXm1QAWDqW42cnCwexXNy4hRdze9OsEav9IXXxW0xilmzgTuHRhSK2FcCBQ1fS_w/exec";
 
-    if (!email) {
-      document.getElementById("titre").innerText = "Email manquant ❌";
-    } else {
+    function obtenirLocalisation(callback) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          position => callback(position.coords.latitude, position.coords.longitude),
+          () => callback(null, null)
+        );
+      } else {
+        callback(null, null);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!email) {
+        document.getElementById("titre").innerText = "Email manquant ❌";
+        return;
+      }
+
       fetch(`${scriptBase}?email=${encodeURIComponent(email)}`)
         .then(res => res.text())
         .then(response => {
           if (response.startsWith("Bonjour") || response.startsWith("Bonsoir")) {
             document.getElementById("titre").innerText = response;
+            document.getElementById("buttons").innerHTML = `
+              <button id="btn-arrivee">Pointer Arrivée</button>
+              <button id="btn-urgence">Pointer Urgence</button>
+              <button onclick="window.open('${scriptBase}?email=${email}&action=retour')">Fin d'Urgence</button>
+              <button onclick="window.open('${scriptBase}?email=${email}&action=descente')">Pointer Descente</button>
+            `;
 
-            const now = new Date();
-            const heure = now.getHours();
-            const buttons = document.getElementById("buttons");
+            document.getElementById("btn-arrivee").onclick = () => {
+              document.getElementById("arrivee-container").style.display = "flex";
+              document.getElementById("urgence-container").style.display = "none";
+            };
 
-            // Si l'heure est entre 18h et 8h, on cache les boutons
-            //if (heure >= 18 || heure < 8) {
-              buttons.innerHTML = "<p>⛔ Le pointage est fermé entre 18h00 et 8h00.</p>";
-         //   } else {
-              buttons.innerHTML = `
-                <button id="btn-arrivee">Pointer Arrivée</button>
-                <button id="btn-urgence">Pointer Urgence</button>
-                <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=retour', '_blank')">Fin d'Urgence</button>
-                <button onclick="window.open('${scriptBase}?email=${encodeURIComponent(email)}&action=descente', '_blank')">Pointer Descente</button>
-              `;
-        //    }
+            document.getElementById("btn-urgence").onclick = () => {
+              document.getElementById("urgence-container").style.display = "flex";
+              document.getElementById("arrivee-container").style.display = "none";
+            };
 
-            // Actions pour Arrivée
-            document.getElementById('btn-arrivee').addEventListener('click', () => {
-              document.getElementById('arrivee-container').style.display = 'block';
-              document.getElementById('urgence-container').style.display = 'none';
+            document.getElementById("lieu").addEventListener("change", e => {
+              const val = e.target.value;
+              const secteur = document.getElementById("secteur-container");
+              const autre = document.getElementById("autre-lieu");
+              secteur.innerHTML = "";
+              secteur.style.display = "none";
+              autre.style.display = "none";
+              if (val === "Zone Sacré Coeur") {
+                secteur.style.display = "block";
+                for (let i = 1; i <= 11; i++) secteur.innerHTML += `<option value="1S${i}">1S${i}</option>`;
+              } else if (val === "Zone SICAP") {
+                secteur.style.display = "block";
+                for (let i = 1; i <= 3; i++) secteur.innerHTML += `<option value="2S${i}">2S${i}</option>`;
+              } else if (val === "Autre") autre.style.display = "block";
             });
 
-            // Actions pour Urgence
-            document.getElementById('btn-urgence').addEventListener('click', () => {
-              document.getElementById('urgence-container').style.display = 'block';
-              document.getElementById('arrivee-container').style.display = 'none';
-            });
+            document.getElementById("envoyer-arrivee").onclick = () => {
+              const lieu = document.getElementById("lieu").value;
+              const autreLieu = document.getElementById("autre-lieu").value.trim();
 
-            // Ajoutez l'écouteur d'événement pour changer de lieu
-            document.getElementById('lieu').addEventListener('change', function() {
-              const autreLieuInput = document.getElementById('autre-lieu');
-              if (this.value === 'Autre') {
-                autreLieuInput.style.display = 'block'; // Afficher le champ pour saisir un lieu
-              } else {
-                autreLieuInput.style.display = 'none'; // Cacher le champ si un lieu est sélectionné
+              if (lieu === "Autre" && autreLieu === "") {
+                alert("Veuillez renseigner le lieu d’arrivée.");
+                return;
               }
-            });
-            
-            // Envoyer Arrivée
-            document.getElementById('envoyer-arrivee').addEventListener('click', () => {
-              const lieu = document.getElementById('lieu').value;
-              const autreLieu = document.getElementById('autre-lieu').value;
-              const finalLieu = lieu === 'Autre' && autreLieu ? autreLieu : lieu; // Si Autre est sélectionné et qu'un autre lieu est saisi, utilisez-le.
-            
-              fetch(`${scriptBase}?email=${encodeURIComponent(email)}&action=arrivee&lieu=${encodeURIComponent(finalLieu)}`)
-                .then(response => response.text())
-                .then(response => {
-                  document.getElementById("titre").innerText = response;
-                  document.getElementById('arrivee-container').style.display = 'none'; // Cache le formulaire après l'envoi
+
+              let finalLieu = lieu;
+              if (lieu === "Zone Sacré Coeur" || lieu === "Zone SICAP")
+                finalLieu = document.getElementById("secteur-container").value;
+              else if (lieu === "Autre")
+                finalLieu = autreLieu;
+
+              obtenirLocalisation((lat, lng) => {
+                let url = `${scriptBase}?email=${encodeURIComponent(email)}&action=arrivee&lieu=${encodeURIComponent(finalLieu)}`;
+                if (lat && lng) url += `&latitude=${lat}&longitude=${lng}`;
+                fetch(url).then(r => r.text()).then(msg => {
+                  document.getElementById("titre").innerText = msg;
+                  document.getElementById("arrivee-container").style.display = "none";
                 });
-            });
+              });
+            };
 
-
-            // Envoyer Urgence
-            document.getElementById('envoyer-urgence').addEventListener('click', () => {
-              const raison = document.getElementById('raison').value;
+            document.getElementById("envoyer-urgence").onclick = () => {
+              const raison = document.getElementById("raison").value.trim();
+              if (raison === "") {
+                alert("Veuillez renseigner la raison de l’urgence.");
+                return;
+              }
 
               fetch(`${scriptBase}?email=${encodeURIComponent(email)}&action=urgence&raison=${encodeURIComponent(raison)}`)
-                .then(response => response.text())
-                .then(response => {
-                  document.getElementById("titre").innerText = response;
-                  document.getElementById('urgence-container').style.display = 'none';
+                .then(r => r.text())
+                .then(msg => {
+                  document.getElementById("titre").innerText = msg;
+                  document.getElementById("urgence-container").style.display = "none";
                 });
-            });
+            };
           } else {
             document.getElementById("titre").innerText = response;
           }
-        })
-        .catch(error => {
-          document.getElementById("titre").innerText = "Erreur de connexion 🚫";
-          console.error(error);
         });
-    }
+    });
   </script>
 </body>
 </html>
